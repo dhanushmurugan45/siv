@@ -1,0 +1,1150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Happy Birthday</title>
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&family=Playfair+Display:ital@0;1&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;user-select:none;}
+:root{
+  --pink:#ff6b9d;--rose:#e0285a;
+  --s0:#0e0208;--s1:#1a0610;--s2:#230b16;
+  --border:rgba(255,100,140,.18);
+  --text:rgba(255,220,230,.88);
+  --muted:rgba(255,190,210,.45);
+  --faint:rgba(255,200,215,.2);
+}
+body{font-family:'Quicksand',sans-serif;background:#000;width:100vw;height:100vh;overflow:hidden;cursor:default;}
+::-webkit-scrollbar{width:5px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:rgba(255,100,140,.22);border-radius:3px;}
+
+/* CURSOR */
+#cur{position:fixed;width:20px;height:24px;pointer-events:none;z-index:99999;transform:translate(-2px,-2px);}
+#cur svg{filter:drop-shadow(1px 1px 0 #000);}
+
+/* BOOT */
+#boot{position:fixed;inset:0;background:#000;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:1000;}
+.b-logo{width:52px;height:52px;display:grid;grid-template-columns:1fr 1fr;gap:3px;margin-bottom:50px;}
+.b-logo div{border-radius:2px;}
+.b-logo div:nth-child(1){background:#f25022;}
+.b-logo div:nth-child(2){background:#7fba00;}
+.b-logo div:nth-child(3){background:#00a4ef;}
+.b-logo div:nth-child(4){background:#ffb900;}
+.b-msg{color:rgba(255,255,255,.42);font-size:11.5px;letter-spacing:2.5px;text-transform:uppercase;margin-bottom:22px;min-height:18px;transition:opacity .3s;}
+.b-bar-bg{width:250px;height:2px;background:rgba(255,255,255,.08);border-radius:1px;overflow:hidden;}
+.b-bar{height:100%;background:rgba(255,255,255,.65);width:0%;transition:width .7s ease;}
+.b-sub{color:rgba(255,255,255,.16);font-size:10.5px;letter-spacing:1px;margin-top:14px;}
+
+/* LOCK */
+#lock{position:fixed;inset:0;background:linear-gradient(160deg,#1a0010,#3d0028 45%,#1a0018);display:none;flex-direction:column;align-items:center;justify-content:center;z-index:999;overflow:hidden;}
+#cupidCanvas{position:absolute;inset:0;pointer-events:none;}
+.lk-glass{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;background:rgba(255,255,255,.05);border:1px solid rgba(255,150,180,.2);border-radius:24px;padding:48px 54px 40px;backdrop-filter:blur(20px);box-shadow:0 0 80px rgba(255,100,140,.12);}
+.lk-time{font-family:'Playfair Display',serif;font-size:78px;font-weight:400;color:#fff;line-height:1;letter-spacing:2px;text-shadow:0 0 40px rgba(255,120,160,.3);}
+.lk-date{color:rgba(255,200,215,.5);font-size:13px;letter-spacing:3px;text-transform:uppercase;margin:8px 0 34px;}
+.lk-heart{width:66px;height:66px;margin-bottom:13px;}
+.lk-name{color:rgba(255,220,230,.88);font-size:17px;font-weight:500;letter-spacing:1px;margin-bottom:26px;}
+.pw-wrap{display:flex;align-items:center;background:rgba(255,255,255,.07);border:1px solid rgba(255,150,180,.28);border-radius:50px;overflow:hidden;width:290px;}
+.pw-wrap input{flex:1;background:transparent;border:none;outline:none;color:#fff;font-size:20px;padding:11px 20px;letter-spacing:6px;font-family:'Quicksand',sans-serif;text-align:center;}
+.pw-wrap input::placeholder{letter-spacing:1px;font-size:13px;opacity:.42;color:rgba(255,200,215,.7);}
+.pw-btn{background:rgba(255,100,140,.25);border:none;color:#fff;padding:11px 20px;cursor:pointer;font-size:16px;transition:background .2s;font-family:'Quicksand',sans-serif;font-weight:600;}
+.pw-btn:hover{background:rgba(255,100,140,.48);}
+.pw-err{color:rgba(255,120,120,.8);font-size:12px;margin-top:10px;height:16px;letter-spacing:.3px;}
+.pw-hint{color:rgba(255,200,215,.22);font-size:11px;margin-top:8px;}
+
+/* DESKTOP */
+#desktop{position:fixed;inset:0;display:none;flex-direction:column;cursor:none;}
+#desktop.on{display:flex;}
+.d-bg{position:absolute;inset:0;background:radial-gradient(ellipse at 20% 50%,rgba(255,100,140,.07) 0%,transparent 60%),linear-gradient(160deg,#1c0a12,#2e0d1e 50%,#1a0610);z-index:0;}
+.d-wp{position:absolute;inset:0;background-size:cover;background-position:center;background-repeat:no-repeat;z-index:1;opacity:0;transition:opacity 1.2s ease;}
+.d-wp.on{opacity:1;}
+.d-area{position:relative;z-index:3;flex:1;padding:14px;display:grid;grid-template-columns:repeat(auto-fill,88px);grid-auto-rows:94px;align-content:start;gap:2px;overflow:hidden;}
+
+.icon{display:flex;flex-direction:column;align-items:center;justify-content:center;width:88px;height:90px;border-radius:6px;cursor:pointer;padding:8px 4px 5px;transition:background .12s;border:1px solid transparent;position:relative;}
+.icon:hover{background:rgba(255,150,180,.1);}
+.icon.sel{background:rgba(255,100,140,.14);border-color:rgba(255,150,180,.32);}
+.icon-svg{width:46px;height:46px;pointer-events:none;margin-bottom:5px;flex-shrink:0;}
+.icon-lbl{font-size:11px;color:#fff;text-align:center;text-shadow:1px 1px 3px #000,0 0 8px rgba(0,0,0,.9);line-height:1.3;pointer-events:none;font-weight:500;word-break:break-word;max-width:82px;}
+
+/* TASKBAR */
+#bar{position:relative;z-index:10;height:44px;background:rgba(8,0,5,.9);backdrop-filter:blur(24px);display:flex;align-items:center;padding:0 6px;gap:4px;border-top:1px solid rgba(255,100,140,.12);flex-shrink:0;}
+.bar-start{width:44px;height:36px;display:flex;align-items:center;justify-content:center;cursor:pointer;border-radius:4px;transition:background .12s;flex-shrink:0;}
+.bar-start:hover{background:rgba(255,100,140,.13);}
+.bar-search{background:rgba(255,255,255,.05);border:1px solid rgba(255,100,140,.12);border-radius:20px;display:flex;align-items:center;padding:0 11px;gap:5px;height:29px;width:170px;color:var(--muted);font-size:12px;cursor:text;flex-shrink:0;}
+.bar-center{flex:1;display:flex;align-items:center;justify-content:center;gap:2px;}
+.bar-app{width:44px;height:36px;border-radius:4px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:background .12s;position:relative;}
+.bar-app:hover{background:rgba(255,100,140,.1);}
+.bar-app.open::after{content:'';position:absolute;bottom:2px;left:50%;transform:translateX(-50%);width:16px;height:2px;background:var(--pink);border-radius:2px;}
+.bar-app>div{width:22px;height:22px;pointer-events:none;}
+.bar-right{margin-left:auto;display:flex;align-items:center;gap:7px;padding:0 8px;flex-shrink:0;}
+.bar-tbtn{background:rgba(255,100,140,.09);border:1px solid rgba(255,100,140,.2);color:var(--muted);font-size:11px;padding:4px 10px;border-radius:20px;cursor:pointer;font-family:'Quicksand',sans-serif;font-weight:500;transition:background .14s;white-space:nowrap;}
+.bar-tbtn:hover{background:rgba(255,100,140,.22);color:var(--text);}
+.bar-clock{text-align:right;line-height:1.5;font-size:11px;color:rgba(255,200,215,.6);}
+
+/* CONTEXT MENU */
+#ctx{position:fixed;background:rgba(16,2,9,.97);backdrop-filter:blur(30px);border:1px solid rgba(255,100,140,.18);border-radius:10px;padding:5px;min-width:215px;z-index:9999;display:none;box-shadow:0 14px 44px rgba(0,0,0,.78);}
+.cx{padding:9px 14px;color:rgba(255,220,230,.78);font-size:13px;border-radius:6px;cursor:pointer;display:flex;align-items:center;gap:10px;transition:background .1s;font-weight:500;}
+.cx:hover{background:rgba(255,100,140,.12);color:#fff;}
+.cx-sep{height:1px;background:rgba(255,100,140,.1);margin:4px 8px;}
+
+/* START MENU */
+#smenu{position:fixed;bottom:44px;left:0;width:375px;background:rgba(10,1,6,.97);backdrop-filter:blur(30px);border:1px solid rgba(255,100,140,.14);border-radius:10px 10px 0 0;padding:20px;z-index:900;display:none;box-shadow:0 -10px 40px rgba(0,0,0,.78);}
+.sm-s{background:rgba(255,255,255,.05);border:1px solid rgba(255,100,140,.17);border-radius:20px;padding:8px 16px;width:100%;color:rgba(255,200,215,.55);font-size:13px;outline:none;margin-bottom:16px;font-family:'Quicksand',sans-serif;}
+.sm-lbl{font-size:11px;color:var(--faint);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px;}
+.sm-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:20px;}
+.sm-it{display:flex;flex-direction:column;align-items:center;padding:10px 4px;border-radius:6px;cursor:pointer;font-size:10px;color:rgba(255,200,215,.62);text-align:center;gap:5px;transition:background .1s;}
+.sm-it:hover{background:rgba(255,100,140,.1);color:#fff;}
+.sm-it>div{width:28px;height:28px;pointer-events:none;}
+.sm-foot{display:flex;align-items:center;justify-content:space-between;border-top:1px solid rgba(255,100,140,.1);padding-top:12px;}
+.sm-user{display:flex;align-items:center;gap:10px;}
+.sm-av{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--pink),var(--rose));display:flex;align-items:center;justify-content:center;}
+.sm-name{color:rgba(255,220,230,.78);font-size:13px;font-weight:500;}
+.sm-pwr{width:34px;height:34px;border-radius:6px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:15px;transition:background .1s;color:var(--faint);}
+.sm-pwr:hover{background:rgba(255,100,140,.1);color:var(--pink);}
+
+/* WINDOWS */
+.win{position:fixed;background:var(--s1);border:1px solid rgba(255,100,140,.2);border-radius:10px;box-shadow:0 24px 70px rgba(0,0,0,.9);min-width:460px;min-height:300px;z-index:100;display:flex;flex-direction:column;overflow:hidden;animation:wpop .17s cubic-bezier(.34,1.4,.64,1);}
+@keyframes wpop{from{transform:scale(.93);opacity:0}to{transform:scale(1);opacity:1}}
+.wbar{height:36px;background:var(--s2);display:flex;align-items:center;padding:0 10px;cursor:move;flex-shrink:0;border-bottom:1px solid rgba(255,100,140,.1);gap:8px;}
+.wbar-ico{width:18px;height:18px;pointer-events:none;flex-shrink:0;}
+.wbar-ttl{color:rgba(255,220,230,.82);font-size:13px;flex:1;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.wctrl{display:flex;gap:1px;flex-shrink:0;}
+.wc{width:44px;height:28px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:12px;color:rgba(255,200,215,.5);border-radius:4px;transition:background .1s;font-weight:700;}
+.wc:hover{background:rgba(255,255,255,.07);}
+.wc.cls:hover{background:#c42b1c;color:#fff;}
+.wbody{flex:1;overflow:auto;display:flex;flex-direction:column;}
+
+/* FOLDER WINDOW */
+.fw-head{display:flex;align-items:center;gap:8px;padding:9px 14px;background:var(--s2);border-bottom:1px solid rgba(255,100,140,.09);flex-shrink:0;}
+.fw-path{flex:1;background:rgba(255,255,255,.04);border:1px solid rgba(255,100,140,.1);border-radius:4px;padding:5px 12px;color:rgba(255,220,230,.62);font-size:12px;font-family:'Quicksand',sans-serif;outline:none;}
+.fw-actions{display:flex;gap:6px;flex-shrink:0;flex-wrap:wrap;}
+.fw-btn{background:rgba(255,100,140,.1);border:1px solid rgba(255,100,140,.25);color:rgba(255,200,215,.72);font-size:12px;padding:5px 13px;border-radius:20px;cursor:pointer;font-family:'Quicksand',sans-serif;font-weight:500;transition:background .14s;white-space:nowrap;}
+.fw-btn:hover{background:rgba(255,100,140,.26);}
+.fw-btn.danger{background:rgba(180,20,20,.1);border-color:rgba(200,40,40,.22);color:rgba(255,160,160,.65);}
+.fw-btn.danger:hover{background:rgba(200,40,40,.22);}
+.fw-tabs{display:flex;gap:2px;padding:0 14px;background:var(--s2);border-bottom:1px solid rgba(255,100,140,.08);flex-shrink:0;}
+.fw-tab{padding:7px 14px;font-size:12px;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;transition:color .12s,border-color .12s;font-weight:500;}
+.fw-tab:hover{color:var(--text);}
+.fw-tab.active{color:var(--pink);border-bottom-color:var(--pink);}
+.fw-stats{padding:6px 14px;background:var(--s0);border-bottom:1px solid rgba(255,100,140,.06);font-size:10.5px;color:var(--faint);display:flex;align-items:center;gap:12px;flex-shrink:0;}
+.fw-stat-dot{width:6px;height:6px;border-radius:50%;background:var(--pink);opacity:.5;}
+.drop-ov{position:absolute;inset:0;background:rgba(255,100,140,.08);border:2px dashed rgba(255,100,140,.42);border-radius:6px;display:none;align-items:center;justify-content:center;color:rgba(255,200,215,.7);font-size:14px;font-weight:500;z-index:10;pointer-events:none;flex-direction:column;gap:8px;}
+.drop-ov.on{display:flex;}
+.fw-grid-wrap{flex:1;position:relative;overflow:auto;}
+.fw-grid{padding:14px;display:grid;grid-template-columns:repeat(auto-fill,minmax(108px,1fr));gap:10px;}
+.fc{display:flex;flex-direction:column;align-items:center;border-radius:8px;overflow:hidden;cursor:pointer;border:1px solid rgba(255,100,140,.1);transition:border-color .13s,transform .13s,background .13s;background:rgba(255,255,255,.025);position:relative;}
+.fc:hover{border-color:rgba(255,100,140,.35);transform:scale(1.03);}
+.fc.sel{border-color:var(--pink);background:rgba(255,100,140,.1);}
+.fc img,.fc video{width:100%;aspect-ratio:1;object-fit:cover;pointer-events:none;display:block;}
+.fc-doc{width:100%;aspect-ratio:1;display:flex;align-items:center;justify-content:center;background:rgba(255,100,140,.07);}
+.fc-doc>div{width:38px;height:38px;}
+.fc-name{padding:5px 6px;font-size:10px;color:rgba(255,200,215,.62);text-align:center;width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.fc-chk{position:absolute;top:4px;right:4px;width:18px;height:18px;border-radius:50%;background:var(--pink);display:none;align-items:center;justify-content:center;font-size:9px;color:#fff;font-weight:700;}
+.fc.sel .fc-chk{display:flex;}
+.fc-badge{position:absolute;top:4px;left:4px;background:rgba(255,100,140,.8);border-radius:4px;padding:1px 5px;font-size:9px;color:#fff;font-weight:600;}
+.fw-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;gap:10px;color:var(--faint);font-size:13px;text-align:center;padding:40px;min-height:200px;}
+
+/* EXPLORER */
+.ex-bar{display:flex;align-items:center;gap:6px;padding:8px 12px;background:var(--s2);border-bottom:1px solid rgba(255,100,140,.09);flex-shrink:0;}
+.ex-nb{width:28px;height:28px;border-radius:4px;background:rgba(255,255,255,.04);border:1px solid var(--border);color:var(--muted);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:13px;transition:background .1s;}
+.ex-nb:hover{background:rgba(255,100,140,.1);}
+.ex-path{flex:1;background:rgba(255,255,255,.04);border:1px solid rgba(255,100,140,.1);border-radius:4px;padding:5px 12px;color:rgba(255,220,230,.62);font-size:12px;font-family:'Quicksand',sans-serif;outline:none;}
+.ex-grid{padding:14px;display:grid;grid-template-columns:repeat(auto-fill,minmax(86px,1fr));gap:8px;}
+.ex-it{display:flex;flex-direction:column;align-items:center;padding:10px 6px;border-radius:6px;cursor:pointer;transition:background .1s;}
+.ex-it:hover{background:rgba(255,100,140,.09);}
+.ex-it>div{width:40px;height:40px;margin-bottom:6px;}
+.ex-it-n{font-size:11px;color:rgba(255,220,230,.72);text-align:center;line-height:1.3;}
+
+/* NOTEPAD */
+.np-menu{display:flex;padding:4px 8px;background:var(--s2);border-bottom:1px solid rgba(255,100,140,.09);flex-shrink:0;}
+.np-mi{padding:4px 10px;color:var(--muted);font-size:12px;cursor:pointer;border-radius:4px;transition:background .1s;}
+.np-mi:hover{background:rgba(255,100,140,.1);color:var(--text);}
+.np-ta{flex:1;width:100%;background:var(--s0);border:none;outline:none;color:rgba(255,220,230,.82);font-size:13.5px;font-family:'Quicksand',sans-serif;padding:18px;resize:none;line-height:1.95;caret-color:var(--pink);}
+.np-bar{padding:4px 12px;background:var(--s2);border-top:1px solid rgba(255,100,140,.08);font-size:10px;color:var(--faint);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.np-save{background:rgba(255,100,140,.13);border:1px solid rgba(255,100,140,.25);color:rgba(255,200,215,.65);font-size:10px;padding:2px 10px;border-radius:10px;cursor:pointer;font-family:'Quicksand',sans-serif;transition:background .14s;}
+.np-save:hover{background:rgba(255,100,140,.28);}
+
+/* THIS PC */
+.pc-wrap{padding:18px;overflow:auto;}
+.sec-h{font-size:11px;color:rgba(255,200,215,.26);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:11px;padding-bottom:5px;border-bottom:1px solid rgba(255,100,140,.08);}
+.drv-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:9px;margin-bottom:22px;}
+.drv-card{background:rgba(255,100,140,.03);border:1px solid rgba(255,100,140,.1);border-radius:8px;padding:12px;cursor:pointer;transition:background .1s;}
+.drv-card:hover{background:rgba(255,100,140,.08);}
+.drv-top{display:flex;align-items:center;gap:9px;margin-bottom:9px;}
+.drv-top>div{width:28px;height:28px;flex-shrink:0;}
+.drv-n{color:rgba(255,220,230,.8);font-size:13px;font-weight:500;}
+.drv-l{color:var(--faint);font-size:10px;}
+.drv-bg{height:4px;background:rgba(255,255,255,.07);border-radius:2px;overflow:hidden;}
+.drv-fill{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--pink),#c23668);}
+.drv-sz{font-size:10px;color:var(--faint);margin-top:4px;}
+.fold-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px;}
+.fold-c{display:flex;align-items:center;gap:9px;padding:9px 11px;border-radius:6px;cursor:pointer;background:rgba(255,100,140,.03);border:1px solid rgba(255,100,140,.08);transition:background .1s;}
+.fold-c:hover{background:rgba(255,100,140,.08);}
+.fold-c>div{width:22px;height:22px;flex-shrink:0;}
+.fold-c span{color:rgba(255,220,230,.75);font-size:13px;}
+
+/* RECYCLE / OFFICE */
+.rc-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;gap:12px;color:var(--faint);padding:40px;}
+.rc-wrap>div:first-child{width:76px;height:76px;opacity:.22;}
+.of-hdr{padding:13px 20px;display:flex;align-items:center;gap:11px;flex-shrink:0;}
+.of-hdr>div{width:30px;height:30px;}
+.of-hdr span{color:#fff;font-size:17px;font-weight:600;}
+.of-body{flex:1;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:13px;color:var(--faint);}
+.of-body>div:first-child{width:62px;height:62px;opacity:.32;}
+.of-new{border:none;border-radius:4px;color:#fff;font-size:13px;padding:9px 22px;cursor:pointer;font-family:'Quicksand',sans-serif;font-weight:600;transition:opacity .14s;}
+.of-new:hover{opacity:.82;}
+
+/* MEDIA VIEWER */
+#viewer{position:fixed;inset:0;background:rgba(0,0,0,.95);z-index:9998;display:none;align-items:center;justify-content:center;flex-direction:column;gap:8px;}
+#viewer img,#viewer video{max-width:90vw;max-height:84vh;object-fit:contain;border-radius:4px;box-shadow:0 0 60px rgba(0,0,0,.8);}
+.vclose{position:absolute;top:14px;right:18px;background:none;border:none;color:#fff;font-size:22px;cursor:pointer;opacity:.45;transition:opacity .12s;}
+.vclose:hover{opacity:1;}
+.vname{color:rgba(255,255,255,.3);font-size:12px;}
+.vnav{position:absolute;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.08);border:none;color:rgba(255,255,255,.5);font-size:22px;cursor:pointer;padding:12px 10px;border-radius:6px;transition:background .12s;}
+.vnav:hover{background:rgba(255,255,255,.16);color:#fff;}
+#vprev{left:14px;}#vnext{right:14px;}
+
+/* TOAST */
+#toast{position:fixed;bottom:58px;right:14px;z-index:9997;display:flex;flex-direction:column;gap:6px;pointer-events:none;}
+.toast-item{background:rgba(20,4,12,.95);border:1px solid rgba(255,100,140,.2);border-radius:8px;padding:10px 16px;color:rgba(255,220,230,.82);font-size:12px;font-weight:500;backdrop-filter:blur(20px);animation:tIn .25s ease,tOut .3s ease 2.5s forwards;box-shadow:0 6px 20px rgba(0,0,0,.5);}
+@keyframes tIn{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:translateX(0)}}
+@keyframes tOut{to{opacity:0;transform:translateX(20px)}}
+
+/* DIALOG */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:9995;display:flex;align-items:center;justify-content:center;}
+.dlg{background:var(--s2);border:1px solid rgba(255,100,140,.22);border-radius:12px;padding:26px 30px;min-width:310px;box-shadow:0 20px 60px rgba(0,0,0,.8);animation:wpop .2s cubic-bezier(.34,1.4,.64,1);}
+.dlg-t{color:rgba(255,220,230,.85);font-size:15px;font-weight:600;margin-bottom:10px;}
+.dlg-m{color:var(--muted);font-size:13px;line-height:1.6;margin-bottom:18px;}
+.dlg-inp{width:100%;background:rgba(255,255,255,.06);border:1px solid rgba(255,100,140,.22);border-radius:6px;padding:9px 14px;color:var(--text);font-size:14px;outline:none;font-family:'Quicksand',sans-serif;margin-bottom:16px;caret-color:var(--pink);}
+.dlg-inp:focus{border-color:var(--pink);}
+.dlg-btns{display:flex;gap:8px;justify-content:flex-end;}
+.dlg-btn{padding:7px 20px;border-radius:6px;font-size:13px;font-family:'Quicksand',sans-serif;font-weight:500;cursor:pointer;transition:background .12s;border:none;}
+.dlg-cancel{background:rgba(255,255,255,.06);color:var(--muted);border:1px solid rgba(255,255,255,.09);}
+.dlg-cancel:hover{background:rgba(255,255,255,.1);}
+.dlg-ok{background:linear-gradient(135deg,var(--pink),var(--rose));color:#fff;}
+.dlg-ok:hover{opacity:.86;}
+.dlg-ok.red{background:linear-gradient(135deg,#e03333,#a01010);}
+
+/* ════ PHOTO ADDER TOOL (pre-load panel) ════ */
+#adder{position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:9994;display:none;align-items:center;justify-content:center;}
+#adder.on{display:flex;}
+.adder-box{background:var(--s2);border:1px solid rgba(255,100,140,.25);border-radius:16px;padding:28px 32px;width:540px;max-height:80vh;overflow:auto;box-shadow:0 24px 70px rgba(0,0,0,.9);animation:wpop .2s cubic-bezier(.34,1.4,.64,1);}
+.adder-title{color:rgba(255,220,230,.9);font-size:17px;font-weight:700;margin-bottom:6px;}
+.adder-sub{color:var(--muted);font-size:12px;margin-bottom:20px;line-height:1.6;}
+.adder-section{margin-bottom:20px;}
+.adder-label{font-size:11px;color:rgba(255,200,215,.4);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;}
+.adder-drop{border:2px dashed rgba(255,100,140,.3);border-radius:10px;padding:20px;text-align:center;cursor:pointer;transition:border-color .15s,background .15s;position:relative;}
+.adder-drop:hover,.adder-drop.ov{border-color:var(--pink);background:rgba(255,100,140,.06);}
+.adder-drop input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
+.adder-drop-txt{color:var(--muted);font-size:13px;pointer-events:none;}
+.adder-drop-txt strong{color:rgba(255,200,215,.75);}
+.adder-preview{display:grid;grid-template-columns:repeat(auto-fill,minmax(80px,1fr));gap:8px;margin-top:10px;}
+.adder-thumb{border-radius:6px;overflow:hidden;position:relative;aspect-ratio:1;border:1px solid rgba(255,100,140,.15);}
+.adder-thumb img,.adder-thumb video{width:100%;height:100%;object-fit:cover;display:block;}
+.adder-thumb-rm{position:absolute;top:3px;right:3px;width:18px;height:18px;background:rgba(200,30,30,.85);border-radius:50%;color:#fff;font-size:10px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-weight:700;border:none;}
+.adder-thumb-lbl{position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,.6);font-size:9px;color:rgba(255,255,255,.7);padding:2px 4px;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.adder-footer{display:flex;gap:10px;justify-content:flex-end;margin-top:4px;}
+.adder-btn{padding:9px 24px;border-radius:8px;font-size:13px;font-family:'Quicksand',sans-serif;font-weight:600;cursor:pointer;border:none;transition:opacity .14s;}
+.adder-cancel{background:rgba(255,255,255,.07);color:var(--muted);border:1px solid rgba(255,255,255,.1);}
+.adder-cancel:hover{background:rgba(255,255,255,.12);}
+.adder-save{background:linear-gradient(135deg,var(--pink),var(--rose));color:#fff;}
+.adder-save:hover{opacity:.86;}
+.adder-count{font-size:11px;color:var(--muted);margin-top:6px;}
+</style>
+</head>
+<body>
+
+<!-- CURSOR -->
+<div id="cur"><svg width="20" height="24" viewBox="0 0 20 24"><path d="M0 0 L0 20 L5.5 14.5 L9 22 L11.5 20.8 L8 13 L15 13 Z" fill="white" stroke="#000" stroke-width="1.2" stroke-linejoin="round"/></svg></div>
+
+<!-- BOOT -->
+<div id="boot">
+  <div class="b-logo"><div></div><div></div><div></div><div></div></div>
+  <div class="b-msg" id="bMsg">Initializing...</div>
+  <div class="b-bar-bg"><div class="b-bar" id="bBar"></div></div>
+  <div class="b-sub">Please do not turn off your PC</div>
+</div>
+
+<!-- LOCK -->
+<div id="lock">
+  <canvas id="cupidCanvas"></canvas>
+  <div class="lk-glass">
+    <div class="lk-time" id="lkTime">00:00</div>
+    <div class="lk-date" id="lkDate">Sunday, May 10</div>
+    <svg class="lk-heart" viewBox="0 0 72 72" fill="none">
+      <path d="M36 62C36 62 8 44 8 24C8 14 15 8 24 8C29 8 34 11 36 15C38 11 43 8 48 8C57 8 64 14 64 24C64 44 36 62 36 62Z" fill="url(#hg)" opacity=".9"/>
+      <defs><linearGradient id="hg" x1="8" y1="8" x2="64" y2="62" gradientUnits="userSpaceOnUse"><stop stop-color="#ff6b9d"/><stop offset="1" stop-color="#c2185b"/></linearGradient></defs>
+      <line x1="14" y1="52" x2="58" y2="20" stroke="rgba(255,220,230,.55)" stroke-width="2" stroke-linecap="round"/>
+      <polygon points="58,20 52,22 56,28" fill="rgba(255,220,230,.65)"/>
+      <polygon points="14,52 16,46 22,50" fill="rgba(255,220,230,.65)"/>
+    </svg>
+    <div class="lk-name">Birthday Girl</div>
+    <div class="pw-wrap">
+      <input type="password" id="pwIn" placeholder="Enter PIN" maxlength="10" onkeydown="if(event.key==='Enter')checkPw()"/>
+      <button class="pw-btn" onclick="checkPw()">&#8594;</button>
+    </div>
+    <div class="pw-err" id="pwErr"></div>
+    <div class="pw-hint">Hint: our special code</div>
+  </div>
+</div>
+
+<!-- DESKTOP -->
+<div id="desktop">
+  <div class="d-bg"></div>
+  <div class="d-wp" id="dwp"></div>
+  <div class="d-area" id="darea"></div>
+  <div id="bar">
+    <div class="bar-start" onclick="toggleSM()">
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+        <rect x="0" y="0" width="8" height="8" fill="#f25022"/><rect x="10" y="0" width="8" height="8" fill="#7fba00"/>
+        <rect x="0" y="10" width="8" height="8" fill="#00a4ef"/><rect x="10" y="10" width="8" height="8" fill="#ffb900"/>
+      </svg>
+    </div>
+    <div class="bar-search">
+      <svg width="11" height="11" viewBox="0 0 14 14" fill="none"><circle cx="6" cy="6" r="4.5" stroke="currentColor" stroke-width="1.5"/><line x1="9.5" y1="9.5" x2="13" y2="13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      Search
+    </div>
+    <div class="bar-center" id="barCenter"></div>
+    <div class="bar-right">
+      <button class="bar-tbtn" onclick="openAdder()">+ Add Photos</button>
+      <button class="bar-tbtn" onclick="triggerWP()">Wallpaper</button>
+      <input type="file" id="wpFile" accept="image/*" style="display:none" onchange="applyWP(event)"/>
+      <div class="bar-clock" id="barClock"></div>
+    </div>
+  </div>
+</div>
+
+<!-- CONTEXT MENU -->
+<div id="ctx">
+  <div class="cx" onclick="ctxAct('refresh')">&#8635;&nbsp; Refresh</div>
+  <div class="cx" onclick="ctxAct('new-folder')">&#128193;&nbsp; New Folder</div>
+  <div class="cx-sep"></div>
+  <div class="cx" onclick="openAdder()">&#43;&nbsp; Add Photos / Videos</div>
+  <div class="cx" onclick="triggerWP()">&#9670;&nbsp; Change Wallpaper</div>
+</div>
+
+<!-- START MENU -->
+<div id="smenu">
+  <input class="sm-s" placeholder="Search apps, settings..."/>
+  <div class="sm-lbl">Pinned</div>
+  <div class="sm-grid" id="smGrid"></div>
+  <div class="sm-foot">
+    <div class="sm-user">
+      <div class="sm-av">
+        <svg width="32" height="32" viewBox="0 0 32 32"><path d="M16 28C16 28 5 20 5 12C5 8 8 6 11 6C13 6 15 7.5 16 9C17 7.5 19 6 21 6C24 6 27 8 27 12C27 20 16 28 16 28Z" fill="url(#smg)"/><defs><linearGradient id="smg" x1="5" y1="6" x2="27" y2="28" gradientUnits="userSpaceOnUse"><stop stop-color="#ff6b9d"/><stop offset="1" stop-color="#c2185b"/></linearGradient></defs></svg>
+      </div>
+      <div class="sm-name">hey mookie</div>
+    </div>
+    <div class="sm-pwr" title="Power">&#9210;</div>
+  </div>
+</div>
+
+<!-- MEDIA VIEWER -->
+<div id="viewer">
+  <button class="vclose" onclick="closeViewer()">&#10005;</button>
+  <button class="vnav" id="vprev" onclick="viewNav(-1)">&#8592;</button>
+  <img id="vImg" style="display:none"/>
+  <video id="vVid" controls style="display:none"></video>
+  <div class="vname" id="vName"></div>
+  <button class="vnav" id="vnext" onclick="viewNav(1)">&#8594;</button>
+</div>
+
+<!-- TOAST -->
+<div id="toast"></div>
+
+<!-- ════════════════════════════════════════════
+     PHOTO / VIDEO ADDER PANEL
+     Open via "Add Photos" button in taskbar or right-click
+════════════════════════════════════════════ -->
+<div id="adder">
+  <div class="adder-box">
+    <div class="adder-title">Add Photos & Videos</div>
+    <div class="adder-sub">
+      Choose which folder to add files to.<br>
+      Files are saved permanently in this browser — they will be there every time she opens the website.
+    </div>
+
+    <!-- PICTURES -->
+    <div class="adder-section">
+      <div class="adder-label">Pictures folder — Images only</div>
+      <div class="adder-drop" id="adrop-pictures"
+           ondragover="adDragOver(event,'pictures')" ondragleave="adDragLeave('pictures')" ondrop="adDrop(event,'pictures')">
+        <input type="file" id="ainput-pictures" multiple accept="image/*" onchange="adSelect('pictures',event)"/>
+        <div class="adder-drop-txt">
+          <strong>Click to choose photos</strong> or drag & drop here<br>
+          <span style="font-size:11px;opacity:.6">JPG, PNG, GIF, WEBP supported</span>
+        </div>
+      </div>
+      <div class="adder-preview" id="aprev-pictures"></div>
+      <div class="adder-count" id="acount-pictures"></div>
+    </div>
+
+    <!-- VIDEOS -->
+    <div class="adder-section">
+      <div class="adder-label">Videos folder — Videos only</div>
+      <div class="adder-drop" id="adrop-videos"
+           ondragover="adDragOver(event,'videos')" ondragleave="adDragLeave('videos')" ondrop="adDrop(event,'videos')">
+        <input type="file" id="ainput-videos" multiple accept="video/*" onchange="adSelect('videos',event)"/>
+        <div class="adder-drop-txt">
+          <strong>Click to choose videos</strong> or drag & drop here<br>
+          <span style="font-size:11px;opacity:.6">MP4, MOV, AVI, WEBM supported</span>
+        </div>
+      </div>
+      <div class="adder-preview" id="aprev-videos"></div>
+      <div class="adder-count" id="acount-videos"></div>
+    </div>
+
+    <!-- MEMORIES -->
+    <div class="adder-section">
+      <div class="adder-label">Memories folder — Photos & Videos</div>
+      <div class="adder-drop" id="adrop-memories"
+           ondragover="adDragOver(event,'memories')" ondragleave="adDragLeave('memories')" ondrop="adDrop(event,'memories')">
+        <input type="file" id="ainput-memories" multiple accept="image/*,video/*" onchange="adSelect('memories',event)"/>
+        <div class="adder-drop-txt">
+          <strong>Click to choose photos or videos</strong> or drag & drop here
+        </div>
+      </div>
+      <div class="adder-preview" id="aprev-memories"></div>
+      <div class="adder-count" id="acount-memories"></div>
+    </div>
+
+    <!-- WALLPAPER -->
+    <div class="adder-section">
+      <div class="adder-label">Desktop Wallpaper — pick 1 to 3 photos (cycles every 8s)</div>
+      <div class="adder-drop" id="adrop-wallpaper"
+           ondragover="adDragOver(event,'wallpaper')" ondragleave="adDragLeave('wallpaper')" ondrop="adDrop(event,'wallpaper')">
+        <input type="file" id="ainput-wallpaper" multiple accept="image/*" onchange="adSelect('wallpaper',event)"/>
+        <div class="adder-drop-txt">
+          <strong>Click to choose 1–3 wallpaper photos</strong><br>
+          <span style="font-size:11px;opacity:.6">They will cycle on the desktop</span>
+        </div>
+      </div>
+      <div class="adder-preview" id="aprev-wallpaper"></div>
+      <div class="adder-count" id="acount-wallpaper"></div>
+    </div>
+
+    <div class="adder-footer">
+      <button class="adder-btn adder-cancel" onclick="closeAdder()">Cancel</button>
+      <button class="adder-btn adder-save" onclick="saveAdder()">Save Everything</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════
+// SVG ICONS
+// ══════════════════════════════════════════════
+const IC={
+  folder:`<svg viewBox="0 0 48 48" fill="none"><path d="M6 12C6 10.3 7.3 9 9 9L19 9L22 13L39 13C40.7 13 42 14.3 42 16V36C42 37.7 40.7 39 39 39H9C7.3 39 6 37.7 6 36Z" fill="#ffb3cc"/><path d="M6 18H42V36C42 37.7 40.7 39 39 39H9C7.3 39 6 37.7 6 36Z" fill="#ff6b9d"/></svg>`,
+  pictures:`<svg viewBox="0 0 48 48" fill="none"><rect x="6" y="10" width="36" height="28" rx="3" fill="#1a0610"/><rect x="8" y="12" width="32" height="24" rx="2" fill="#3d0028"/><circle cx="17" cy="20" r="4" fill="#ffb3cc"/><path d="M8 30L18 22L26 30L34 23L40 30V34Q40 36 38 36H10Q8 36 8 34Z" fill="#ff6b9d" opacity=".7"/></svg>`,
+  videos:`<svg viewBox="0 0 48 48" fill="none"><rect x="6" y="10" width="36" height="28" rx="3" fill="#1a0610"/><rect x="8" y="12" width="26" height="24" rx="2" fill="#3d0028"/><path d="M34 18L42 22V26L34 30Z" fill="#ff6b9d"/><circle cx="21" cy="24" r="7" fill="rgba(255,107,157,.12)"/><path d="M18 20L28 24L18 28Z" fill="#ff6b9d"/></svg>`,
+  memories:`<svg viewBox="0 0 48 48" fill="none"><path d="M24 40C24 40 8 28 8 17C8 11.5 12 8 17 8C20 8 23 10 24 12.5C25 10 28 8 31 8C36 8 40 11.5 40 17C40 28 24 40 24 40Z" fill="url(#mg)"/><defs><linearGradient id="mg" x1="8" y1="8" x2="40" y2="40" gradientUnits="userSpaceOnUse"><stop stop-color="#ff6b9d"/><stop offset="1" stop-color="#c2185b"/></linearGradient></defs><line x1="12" y1="38" x2="36" y2="14" stroke="rgba(255,220,230,.4)" stroke-width="1.5" stroke-linecap="round"/><polygon points="36,14 30,16 34,22" fill="rgba(255,220,230,.5)"/><polygon points="12,38 14,32 20,36" fill="rgba(255,220,230,.5)"/></svg>`,
+  notes:`<svg viewBox="0 0 48 48" fill="none"><rect x="10" y="6" width="28" height="36" rx="3" fill="#2a0a14"/><rect x="12" y="8" width="24" height="32" rx="2" fill="#3d1020"/><line x1="16" y1="16" x2="32" y2="16" stroke="#ff6b9d" stroke-width="1.5" stroke-linecap="round" opacity=".6"/><line x1="16" y1="21" x2="32" y2="21" stroke="#ff6b9d" stroke-width="1.5" stroke-linecap="round" opacity=".6"/><line x1="16" y1="26" x2="28" y2="26" stroke="#ff6b9d" stroke-width="1.5" stroke-linecap="round" opacity=".6"/><line x1="16" y1="31" x2="25" y2="31" stroke="#ff6b9d" stroke-width="1.5" stroke-linecap="round" opacity=".4"/></svg>`,
+  fights:`<svg viewBox="0 0 48 48" fill="none"><path d="M24 8L28 18L40 18L30 26L34 38L24 30L14 38L18 26L8 18L20 18Z" fill="#ff6b9d" opacity=".25"/><path d="M24 12L27 20L36 20L29 25L32 34L24 28L16 34L19 25L12 20L21 20Z" fill="#ff6b9d" opacity=".65"/></svg>`,
+  thispc:`<svg viewBox="0 0 48 48" fill="none"><rect x="6" y="8" width="36" height="24" rx="3" fill="#2a1520"/><rect x="7" y="9" width="34" height="22" rx="2" fill="#3d0028"/><path d="M15 35L33 35L35 40L13 40Z" fill="#ff6b9d" opacity=".45"/><path d="M10 12H38V30H10Z" fill="url(#pcg)" opacity=".25"/><defs><linearGradient id="pcg" x1="10" y1="12" x2="38" y2="30"><stop stop-color="#ff6b9d"/><stop offset="1" stop-color="#3d0028"/></linearGradient></defs></svg>`,
+  recycle:`<svg viewBox="0 0 48 48" fill="none"><path d="M20 10H28L30 14H18Z" fill="#ff6b9d" opacity=".55"/><path d="M10 16H38L35 40H13Z" fill="#ff6b9d" opacity=".38"/><path d="M10 16H38L36 19H12Z" fill="#ff6b9d" opacity=".55"/><line x1="16" y1="20" x2="17" y2="38" stroke="rgba(255,200,215,.38)" stroke-width="1.5"/><line x1="24" y1="20" x2="24" y2="38" stroke="rgba(255,200,215,.38)" stroke-width="1.5"/><line x1="32" y1="20" x2="31" y2="38" stroke="rgba(255,200,215,.38)" stroke-width="1.5"/></svg>`,
+  explorer:`<svg viewBox="0 0 48 48" fill="none"><path d="M6 12C6 10.3 7.3 9 9 9L19 9L22 13L39 13C40.7 13 42 14.3 42 16V36C42 37.7 40.7 39 39 39H9C7.3 39 6 37.7 6 36Z" fill="#ffd6e7"/><path d="M6 18H42V36C42 37.7 40.7 39 39 39H9C7.3 39 6 37.7 6 36Z" fill="#ffb3cc"/><path d="M22 26H32M22 30H29" stroke="#c2185b" stroke-width="2" stroke-linecap="round"/><circle cx="17" cy="28" r="3" fill="#ff6b9d"/></svg>`,
+  word:`<svg viewBox="0 0 48 48" fill="none"><rect x="8" y="6" width="32" height="36" rx="3" fill="#1a3a6b"/><rect x="10" y="8" width="28" height="32" rx="2" fill="#2b579a"/><path d="M16 18L20 30L24 20L28 30L32 18" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>`,
+  excel:`<svg viewBox="0 0 48 48" fill="none"><rect x="8" y="6" width="32" height="36" rx="3" fill="#0d3320"/><rect x="10" y="8" width="28" height="32" rx="2" fill="#217346"/><path d="M16 18L32 30M32 18L16 30" stroke="white" stroke-width="2.5" stroke-linecap="round"/></svg>`,
+  ppt:`<svg viewBox="0 0 48 48" fill="none"><rect x="8" y="6" width="32" height="36" rx="3" fill="#5c1a0a"/><rect x="10" y="8" width="28" height="32" rx="2" fill="#b7472a"/><rect x="15" y="14" width="18" height="12" rx="2" fill="rgba(255,255,255,.18)"/><circle cx="24" cy="32" r="3" fill="rgba(255,255,255,.35)"/></svg>`,
+  outlook:`<svg viewBox="0 0 48 48" fill="none"><rect x="8" y="6" width="32" height="36" rx="3" fill="#003d80"/><rect x="10" y="8" width="28" height="32" rx="2" fill="#0078d4"/><rect x="13" y="16" width="22" height="14" rx="2" fill="rgba(255,255,255,.14)"/><path d="M13 18L24 25L35 18" stroke="rgba(255,255,255,.55)" stroke-width="1.5" fill="none"/></svg>`,
+  teams:`<svg viewBox="0 0 48 48" fill="none"><rect x="8" y="6" width="32" height="36" rx="3" fill="#2c2661"/><rect x="10" y="8" width="28" height="32" rx="2" fill="#6264a7"/><circle cx="24" cy="20" r="5" fill="rgba(255,255,255,.32)"/><path d="M14 34C14 28 18 25 24 25C30 25 34 28 34 34" fill="rgba(255,255,255,.18)"/></svg>`,
+  drive:`<svg viewBox="0 0 32 32" fill="none"><rect x="2" y="6" width="28" height="20" rx="3" fill="#3d0028"/><rect x="4" y="8" width="24" height="16" rx="2" fill="#5a0038"/><circle cx="25" cy="21" r="2.5" fill="#ff6b9d" opacity=".55"/><line x1="4" y1="16" x2="19" y2="16" stroke="rgba(255,100,140,.3)" stroke-width="1.5"/></svg>`,
+};
+
+// ══════════════════════════════════════════════
+// LOCAL STORAGE ENGINE
+// ══════════════════════════════════════════════
+const LS={
+  K_FILES:'bday_files_v3',
+  K_NOTES:'bday_notes_v3',
+  K_WP:'bday_wp_v3',
+  K_WPS:'bday_wps_v3', // multiple wallpapers
+  loadFiles(){ try{ return JSON.parse(localStorage.getItem(this.K_FILES)||'{}'); }catch(e){ return {}; } },
+  saveFiles(d){ try{ localStorage.setItem(this.K_FILES,JSON.stringify(d)); return true; }catch(e){ if(e.name==='QuotaExceededError') showToast('Storage full — remove some files first.'); return false; } },
+  loadNotes(){ return localStorage.getItem(this.K_NOTES)||DEFAULT_NOTE; },
+  saveNotes(t){ localStorage.setItem(this.K_NOTES,t); },
+  loadWPs(){ try{ return JSON.parse(localStorage.getItem(this.K_WPS)||'[]'); }catch(e){ return []; } },
+  saveWPs(arr){ try{ localStorage.setItem(this.K_WPS,JSON.stringify(arr)); }catch(e){ showToast('Wallpapers too large for storage, try smaller images.'); } },
+};
+
+const FOLDERS={
+  pictures:{ label:'Pictures',  icon:IC.pictures, accept:'image/*',         types:['image'] },
+  videos:  { label:'Videos',    icon:IC.videos,   accept:'video/*',         types:['video'] },
+  memories:{ label:'Memories',  icon:IC.memories, accept:'image/*,video/*', types:['image','video'] },
+  notes:   { label:'Notes',     icon:IC.notes,    special:'notepad' },
+  fights:  { label:'Fights',    icon:IC.fights,   accept:'image/*,video/*,.pdf,.txt', types:['image','video','doc'] },
+};
+
+const DESKTOP_ICONS=[
+  {id:'thispc',   label:'This PC',      icon:IC.thispc},
+  {id:'recycle',  label:'Recycle Bin',  icon:IC.recycle},
+  {id:'explorer', label:'File Explorer',icon:IC.explorer},
+  {id:'word',     label:'Word',         icon:IC.word},
+  {id:'excel',    label:'Excel',        icon:IC.excel},
+  {id:'ppt',      label:'PowerPoint',   icon:IC.ppt},
+  {id:'outlook',  label:'Outlook',      icon:IC.outlook},
+  {id:'teams',    label:'Teams',        icon:IC.teams},
+  {id:'pictures', label:'Pictures',     icon:IC.pictures},
+  {id:'videos',   label:'Videos',       icon:IC.videos},
+  {id:'memories', label:'Memories',     icon:IC.memories},
+  {id:'notes',    label:'Notes',        icon:IC.notes},
+  {id:'fights',   label:'Fights',       icon:IC.fights},
+];
+
+const DEFAULT_NOTE=`Write your note here...
+
+A little note just for you —
+
+You are my favourite person in the whole world.
+Every single day with you feels like a gift
+I never want to stop unwrapping.
+
+Happy Birthday, my love.`;
+
+let fileDB={};
+let openWins={};
+let zTop=100;
+let viewerCtx={folder:null,idx:0};
+
+// ══════════════════════════════════════════════
+// BOOT  (20 seconds)
+// ══════════════════════════════════════════════
+const BOOT_MSGS=[
+  {t:0,    m:'Initializing system...'},
+  {t:1800, m:'Loading kernel modules...'},
+  {t:3500, m:'Mounting file systems...'},
+  {t:5200, m:'Starting hardware services...'},
+  {t:7000, m:'Configuring network stack...'},
+  {t:8800, m:'Loading user profile...'},
+  {t:10500,m:'Applying system policies...'},
+  {t:12500,m:'Starting background services...'},
+  {t:14500,m:'Synchronizing registry...'},
+  {t:16200,m:'Loading personal data...'},
+  {t:17800,m:'Almost done...'},
+  {t:19000,m:'Preparing your desktop...'},
+];
+const BS=Date.now();
+BOOT_MSGS.forEach(b=>{
+  setTimeout(()=>{
+    const el=document.getElementById('bMsg');
+    el.style.opacity='0';
+    setTimeout(()=>{ el.textContent=b.m; el.style.opacity='1'; },220);
+  },b.t);
+});
+(function animBar(){
+  const pct=Math.min(100,((Date.now()-BS)/20000)*100);
+  document.getElementById('bBar').style.width=pct+'%';
+  if(pct<100) requestAnimationFrame(animBar);
+})();
+setTimeout(()=>{
+  const boot=document.getElementById('boot');
+  boot.style.transition='opacity .6s'; boot.style.opacity='0';
+  setTimeout(()=>{ boot.style.display='none'; showLock(); },600);
+},20000);
+
+// ══════════════════════════════════════════════
+// LOCK SCREEN
+// ══════════════════════════════════════════════
+function showLock(){
+  document.getElementById('lock').style.display='flex';
+  updateLockClock(); setInterval(updateLockClock,1000);
+  startCupids();
+}
+function updateLockClock(){
+  const n=new Date();
+  const h=n.getHours().toString().padStart(2,'0'),m=n.getMinutes().toString().padStart(2,'0');
+  document.getElementById('lkTime').textContent=h+':'+m;
+  const DS=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const MS=['January','February','March','April','May','June','July','August','September','October','November','December'];
+  document.getElementById('lkDate').textContent=DS[n.getDay()]+', '+MS[n.getMonth()]+' '+n.getDate();
+}
+function checkPw(){
+  const v=document.getElementById('pwIn').value,e=document.getElementById('pwErr');
+  if(v==='0000'){
+    const lk=document.getElementById('lock');
+    lk.style.transition='opacity .5s'; lk.style.opacity='0';
+    setTimeout(()=>{ lk.style.display='none'; launchDesktop(); },500);
+  } else {
+    e.textContent='Incorrect PIN. Please try again.';
+    document.getElementById('pwIn').value='';
+    setTimeout(()=>e.textContent='',2500);
+  }
+}
+
+// ══════════════════════════════════════════════
+// CUPIDS
+// ══════════════════════════════════════════════
+function startCupids(){
+  const cv=document.getElementById('cupidCanvas'),ctx=cv.getContext('2d');
+  cv.width=window.innerWidth; cv.height=window.innerHeight;
+  const C=Array.from({length:14},()=>({x:Math.random()*cv.width,y:cv.height+Math.random()*300,vx:(Math.random()-.5)*.5,vy:-(0.4+Math.random()*.6),sz:24+Math.random()*28,a:0.06+Math.random()*.22,wb:Math.random()*Math.PI*2,wbs:.01+Math.random()*.01,rot:(Math.random()-.5)*.4}));
+  function draw(c){
+    ctx.save(); ctx.globalAlpha=c.a; ctx.translate(c.x,c.y); ctx.rotate(c.rot+Math.sin(c.wb)*.14); ctx.scale(c.sz/40,c.sz/40);
+    ctx.fillStyle='#ffcce0'; ctx.beginPath(); ctx.ellipse(0,4,10,12,0,0,Math.PI*2); ctx.fill();
+    ctx.fillStyle='#ffe0eb'; ctx.beginPath(); ctx.arc(0,-10,9,0,Math.PI*2); ctx.fill();
+    ctx.fillStyle='rgba(255,200,220,.55)';
+    ctx.beginPath(); ctx.moveTo(-2,-2); ctx.bezierCurveTo(-20,-8,-28,2,-18,8); ctx.bezierCurveTo(-12,6,-4,4,-2,2); ctx.fill();
+    ctx.beginPath(); ctx.moveTo(2,-2); ctx.bezierCurveTo(20,-8,28,2,18,8); ctx.bezierCurveTo(12,6,4,4,2,2); ctx.fill();
+    ctx.strokeStyle='#ffaac8'; ctx.lineWidth=2; ctx.lineCap='round';
+    ctx.beginPath(); ctx.moveTo(-8,2); ctx.lineTo(-14,-4); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(8,2); ctx.lineTo(14,-4); ctx.stroke();
+    ctx.strokeStyle='rgba(255,150,190,.75)'; ctx.lineWidth=1.5;
+    ctx.beginPath(); ctx.moveTo(-18,-8); ctx.lineTo(18,8); ctx.stroke();
+    ctx.fillStyle='rgba(255,150,190,.85)'; ctx.beginPath(); ctx.moveTo(18,8); ctx.lineTo(13,5); ctx.lineTo(15,11); ctx.fill();
+    ctx.fillStyle='rgba(255,200,220,.65)'; ctx.beginPath(); ctx.ellipse(-17,-7,4,2,-.5,0,Math.PI*2); ctx.fill();
+    ctx.restore();
+  }
+  (function loop(){ ctx.clearRect(0,0,cv.width,cv.height); C.forEach(c=>{ c.x+=c.vx; c.y+=c.vy; c.wb+=c.wbs; c.x+=Math.sin(c.wb)*.3; if(c.y<-100){c.y=cv.height+50;c.x=Math.random()*cv.width;} draw(c); }); requestAnimationFrame(loop); })();
+}
+
+// ══════════════════════════════════════════════
+// DESKTOP LAUNCH
+// ══════════════════════════════════════════════
+function launchDesktop(){
+  fileDB=LS.loadFiles();
+  Object.keys(FOLDERS).forEach(k=>{ if(!fileDB[k]) fileDB[k]=[]; });
+  document.getElementById('desktop').classList.add('on');
+  buildDesktop(); buildBarApps(); buildSM();
+  updateBarClock(); setInterval(updateBarClock,1000);
+  startWallpaperCycle();
+}
+
+// ══════════════════════════════════════════════
+// WALLPAPER CYCLE
+// Loads saved wallpapers and cycles through them every 8s
+// ══════════════════════════════════════════════
+let wpIdx=0, wpTimer=null;
+function startWallpaperCycle(){
+  const wps=LS.loadWPs();
+  if(!wps.length) return;
+  const el=document.getElementById('dwp');
+  function show(i){
+    el.style.transition='opacity 1.2s ease';
+    el.style.opacity='0';
+    setTimeout(()=>{
+      el.style.backgroundImage=`url(${wps[i]})`;
+      el.classList.add('on');
+      el.style.opacity='1';
+    },600);
+  }
+  show(0);
+  if(wps.length>1){
+    clearInterval(wpTimer);
+    wpTimer=setInterval(()=>{
+      wpIdx=(wpIdx+1)%wps.length;
+      show(wpIdx);
+    },8000);
+  }
+}
+
+function triggerWP(){ document.getElementById('wpFile').click(); closeCtxMenu(); }
+function applyWP(e){
+  const f=e.target.files[0]; if(!f) return;
+  const r=new FileReader();
+  r.onload=ev=>{
+    const b64=ev.target.result;
+    const wps=LS.loadWPs();
+    wps.push(b64); LS.saveWPs(wps);
+    startWallpaperCycle();
+    showToast('Wallpaper saved!');
+  };
+  r.readAsDataURL(f);
+  e.target.value='';
+}
+
+// ══════════════════════════════════════════════
+// DESKTOP ICONS
+// ══════════════════════════════════════════════
+function buildDesktop(){
+  const area=document.getElementById('darea'); area.innerHTML='';
+  DESKTOP_ICONS.forEach(ic=>{
+    const el=document.createElement('div');
+    el.className='icon'; el.dataset.id=ic.id;
+    el.innerHTML=`<div class="icon-svg">${ic.icon}</div><div class="icon-lbl">${ic.label}</div>`;
+    el.addEventListener('dblclick',()=>openWin(ic.id));
+    el.addEventListener('click',e=>{ e.stopPropagation(); selIcon(el); });
+    area.appendChild(el);
+  });
+  area.addEventListener('click',()=>document.querySelectorAll('.icon').forEach(i=>i.classList.remove('sel')));
+}
+function selIcon(el){ document.querySelectorAll('.icon').forEach(i=>i.classList.remove('sel')); el.classList.add('sel'); }
+
+function buildBarApps(){
+  const c=document.getElementById('barCenter');
+  [{id:'explorer',ic:IC.explorer},{id:'pictures',ic:IC.pictures},{id:'videos',ic:IC.videos},{id:'memories',ic:IC.memories},{id:'notes',ic:IC.notes}].forEach(p=>{
+    const a=document.createElement('div');
+    a.className='bar-app'; a.dataset.id=p.id;
+    a.innerHTML=`<div>${p.ic}</div>`;
+    a.addEventListener('click',()=>{ if(openWins[p.id]) bringFront(openWins[p.id]); else openWin(p.id); });
+    c.appendChild(a);
+  });
+}
+
+function buildSM(){
+  const g=document.getElementById('smGrid'); g.innerHTML='';
+  DESKTOP_ICONS.forEach(ic=>{
+    const a=document.createElement('div'); a.className='sm-it';
+    a.innerHTML=`<div>${ic.icon}</div><span>${ic.label}</span>`;
+    a.addEventListener('click',()=>{ closeSM(); openWin(ic.id); });
+    g.appendChild(a);
+  });
+}
+
+function updateBarClock(){
+  const n=new Date();
+  const h=n.getHours().toString().padStart(2,'0'),m=n.getMinutes().toString().padStart(2,'0');
+  const mo=(n.getMonth()+1).toString().padStart(2,'0'),d=n.getDate().toString().padStart(2,'0');
+  document.getElementById('barClock').innerHTML=`${h}:${m}<br>${mo}/${d}/${n.getFullYear()}`;
+}
+
+// ══════════════════════════════════════════════
+// ████████  PHOTO ADDER PANEL  ████████
+// This is where you add your photos before giving the website
+// ══════════════════════════════════════════════
+const adderStaging={ pictures:[], videos:[], memories:[], wallpaper:[] };
+
+function openAdder(){
+  closeCtxMenu(); closeSM();
+  // Reset staging
+  ['pictures','videos','memories','wallpaper'].forEach(k=>{
+    adderStaging[k]=[];
+    renderAdderPreviews(k);
+  });
+  document.getElementById('adder').classList.add('on');
+}
+function closeAdder(){
+  document.getElementById('adder').classList.remove('on');
+}
+
+function adDragOver(e,key){ e.preventDefault(); document.getElementById('adrop-'+key).classList.add('ov'); }
+function adDragLeave(key){ document.getElementById('adrop-'+key).classList.remove('ov'); }
+function adDrop(e,key){ e.preventDefault(); adDragLeave(key); readFilesIntoStaging(key,Array.from(e.dataTransfer.files)); }
+function adSelect(key,e){ readFilesIntoStaging(key,Array.from(e.target.files)); e.target.value=''; }
+
+function readFilesIntoStaging(key,files){
+  const maxWP=3;
+  if(key==='wallpaper' && adderStaging.wallpaper.length>=maxWP){
+    showToast('Maximum 3 wallpaper photos'); return;
+  }
+  files.forEach(f=>{
+    if(key==='wallpaper' && adderStaging.wallpaper.length>=maxWP) return;
+    const r=new FileReader();
+    r.onload=ev=>{
+      adderStaging[key].push({ name:f.name, data:ev.target.result, type:f.type.startsWith('image/')?'image':'video' });
+      renderAdderPreviews(key);
+    };
+    r.readAsDataURL(f);
+  });
+}
+
+function renderAdderPreviews(key){
+  const wrap=document.getElementById('aprev-'+key);
+  const count=document.getElementById('acount-'+key);
+  const items=adderStaging[key];
+  if(!items.length){ wrap.innerHTML=''; if(count) count.textContent=''; return; }
+  wrap.innerHTML=items.map((f,i)=>`
+    <div class="adder-thumb">
+      ${f.type==='image'
+        ? `<img src="${f.data}" alt="${f.name}"/>`
+        : `<video src="${f.data}" muted></video>`}
+      <button class="adder-thumb-rm" onclick="removeAdderItem('${key}',${i})">&#10005;</button>
+      <div class="adder-thumb-lbl">${f.name}</div>
+    </div>`).join('');
+  if(count) count.textContent=`${items.length} file${items.length!==1?'s':''} ready to save`;
+}
+
+function removeAdderItem(key,idx){
+  adderStaging[key].splice(idx,1);
+  renderAdderPreviews(key);
+}
+
+function saveAdder(){
+  let totalSaved=0;
+
+  // Save pictures
+  adderStaging.pictures.forEach(f=>{
+    fileDB.pictures.push({ id:uid(), name:f.name, type:'image', data:f.data, addedAt:Date.now() });
+    totalSaved++;
+  });
+
+  // Save videos
+  adderStaging.videos.forEach(f=>{
+    fileDB.videos.push({ id:uid(), name:f.name, type:'video', data:f.data, addedAt:Date.now() });
+    totalSaved++;
+  });
+
+  // Save memories
+  adderStaging.memories.forEach(f=>{
+    fileDB.memories.push({ id:uid(), name:f.name, type:f.type, data:f.data, addedAt:Date.now() });
+    totalSaved++;
+  });
+
+  // Save wallpapers
+  if(adderStaging.wallpaper.length){
+    const wps=adderStaging.wallpaper.map(f=>f.data);
+    LS.saveWPs(wps);
+    wpIdx=0;
+    startWallpaperCycle();
+    showToast(`${wps.length} wallpaper${wps.length!==1?'s':''} set — cycling every 8s`);
+  }
+
+  // Persist folder files
+  if(totalSaved>0){
+    const ok=LS.saveFiles(fileDB);
+    // Refresh any open folder windows
+    ['pictures','videos','memories'].forEach(k=>{ if(openWins[k]) refreshFolderWin(k); });
+    showToast(ok ? `${totalSaved} file${totalSaved!==1?'s':''} saved permanently` : 'Could not save — storage full');
+  }
+
+  closeAdder();
+}
+
+function uid(){ return Date.now().toString(36)+Math.random().toString(36).slice(2); }
+
+// ══════════════════════════════════════════════
+// WINDOW SYSTEM
+// ══════════════════════════════════════════════
+function openWin(id){
+  closeSM();
+  if(openWins[id]){ bringFront(openWins[id]); return; }
+  const CONF={
+    thispc:  {title:'This PC',           icon:IC.thispc,  w:700,h:450,build:buildThisPC},
+    recycle: {title:'Recycle Bin',       icon:IC.recycle, w:540,h:360,build:buildRecycle},
+    explorer:{title:'File Explorer',     icon:IC.explorer,w:720,h:490,build:buildExplorer},
+    pictures:{title:'Pictures',          icon:IC.pictures,w:700,h:500,build:()=>buildFolderWin('pictures')},
+    videos:  {title:'Videos',            icon:IC.videos,  w:700,h:500,build:()=>buildFolderWin('videos')},
+    memories:{title:'Memories',          icon:IC.memories,w:720,h:520,build:()=>buildFolderWin('memories')},
+    notes:   {title:'Notes',             icon:IC.notes,   w:560,h:460,build:buildNotepad},
+    fights:  {title:'Fights',            icon:IC.fights,  w:660,h:490,build:()=>buildFolderWin('fights')},
+    word:    {title:'Microsoft Word',    icon:IC.word,    w:680,h:460,build:()=>buildOffice('Word','#2b579a',IC.word)},
+    excel:   {title:'Microsoft Excel',   icon:IC.excel,   w:680,h:460,build:()=>buildOffice('Excel','#217346',IC.excel)},
+    ppt:     {title:'Microsoft PowerPoint',icon:IC.ppt,   w:680,h:460,build:()=>buildOffice('PowerPoint','#b7472a',IC.ppt)},
+    outlook: {title:'Microsoft Outlook', icon:IC.outlook, w:680,h:460,build:()=>buildOffice('Outlook','#0078d4',IC.outlook)},
+    teams:   {title:'Microsoft Teams',   icon:IC.teams,   w:680,h:460,build:()=>buildOffice('Teams','#6264a7',IC.teams)},
+  };
+  const cfg=CONF[id]; if(!cfg) return;
+  const win=document.createElement('div');
+  win.className='win';
+  win.style.cssText=`width:${cfg.w}px;height:${cfg.h}px;left:${70+Math.random()*140}px;top:${50+Math.random()*100}px;z-index:${++zTop}`;
+  win.innerHTML=`
+    <div class="wbar" onmousedown="dragWin(event,this.closest('.win'))">
+      <div class="wbar-ico">${cfg.icon}</div>
+      <span class="wbar-ttl">${cfg.title}</span>
+      <div class="wctrl">
+        <div class="wc" onclick="minWin('${id}')">&#8722;</div>
+        <div class="wc" onclick="maxWin(this.closest('.win'))">&#9633;</div>
+        <div class="wc cls" onclick="closeWin('${id}')">&#10005;</div>
+      </div>
+    </div>
+    <div class="wbody" id="wb-${id}">${cfg.build()}</div>`;
+  win.addEventListener('mousedown',()=>bringFront(win));
+  document.body.appendChild(win);
+  openWins[id]=win;
+  markBar(id,true);
+  if(['pictures','videos','memories','fights'].includes(id)) attachDrop(id,win);
+}
+
+function closeWin(id){ if(openWins[id]){ openWins[id].remove(); delete openWins[id]; markBar(id,false); } }
+function minWin(id){ if(openWins[id]) openWins[id].style.display='none'; }
+function maxWin(win){
+  if(win._mx){ Object.assign(win.style,win._prev); win._mx=false; win.style.borderRadius='10px'; }
+  else{ win._prev={left:win.style.left,top:win.style.top,width:win.style.width,height:win.style.height}; Object.assign(win.style,{left:'0',top:'0',width:'100vw',height:'calc(100vh - 44px)',borderRadius:'0'}); win._mx=true; }
+}
+function bringFront(win){ win.style.zIndex=++zTop; if(win.style.display==='none') win.style.display='flex'; }
+function markBar(id,open){ const el=document.querySelector(`#barCenter .bar-app[data-id="${id}"]`); if(el) el.classList.toggle('open',open); }
+
+function dragWin(e,win){
+  if(win._mx) return; e.preventDefault();
+  const ox=e.clientX-win.offsetLeft,oy=e.clientY-win.offsetTop;
+  const mm=ev=>{ win.style.left=(ev.clientX-ox)+'px'; win.style.top=(ev.clientY-oy)+'px'; };
+  const mu=()=>{ document.removeEventListener('mousemove',mm); document.removeEventListener('mouseup',mu); };
+  document.addEventListener('mousemove',mm); document.addEventListener('mouseup',mu);
+}
+
+// ══════════════════════════════════════════════
+// FOLDER WINDOW
+// ══════════════════════════════════════════════
+function buildFolderWin(fid){
+  const cfg=FOLDERS[fid], files=fileDB[fid]||[];
+  const isMem=fid==='memories';
+  const tabs=isMem?`<div class="fw-tabs">
+    <div class="fw-tab active" onclick="switchTab('${fid}','all',this)">All</div>
+    <div class="fw-tab" onclick="switchTab('${fid}','image',this)">Photos</div>
+    <div class="fw-tab" onclick="switchTab('${fid}','video',this)">Videos</div>
+  </div>`:'';
+  const ic=files.filter(f=>f.type==='image').length, vc=files.filter(f=>f.type==='video').length;
+  const stats=isMem
+    ?`<div class="fw-stats"><div class="fw-stat-dot"></div>${ic} photo${ic!==1?'s':''} &nbsp;|&nbsp; ${vc} video${vc!==1?'s':''} &nbsp;|&nbsp; ${files.length} total</div>`
+    :`<div class="fw-stats"><div class="fw-stat-dot"></div>${files.length} item${files.length!==1?'s':''}</div>`;
+  return `
+    <div class="fw-head">
+      <input class="fw-path" value="${cfg.label}" readonly/>
+      <div class="fw-actions">
+        <label class="fw-btn" for="fu-${fid}">+ Add Files</label>
+        <input type="file" id="fu-${fid}" multiple accept="${cfg.accept}" style="display:none" onchange="handleUpload('${fid}',event)"/>
+        <button class="fw-btn danger" id="dsel-${fid}" style="display:none" onclick="deleteSelected('${fid}')">Delete Selected</button>
+        <button class="fw-btn danger" onclick="clearFolder('${fid}')">Clear All</button>
+      </div>
+    </div>
+    ${tabs}${stats}
+    <div class="fw-grid-wrap" id="fgw-${fid}">
+      <div class="drop-ov" id="dov-${fid}">
+        <svg width="40" height="40" viewBox="0 0 48 48" fill="none"><path d="M24 8v20M16 20l8-12 8 12" stroke="#ff6b9d" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 34h32" stroke="#ff6b9d" stroke-width="2" stroke-linecap="round" opacity=".5"/></svg>
+        Drop files here
+      </div>
+      <div class="fw-grid" id="fg-${fid}">${renderGrid(fid,'all')}</div>
+    </div>`;
+}
+
+function renderGrid(fid,filter){
+  const all=fileDB[fid]||[];
+  const files=all.filter(f=>filter==='all'||f.type===filter);
+  if(!files.length){
+    const msgs={pictures:'No photos yet — click Add Files or use the + Add Photos button in taskbar',videos:'No videos yet — click Add Files',memories:'No memories yet — add photos & videos',fights:'Empty'};
+    return `<div class="fw-empty">
+      <svg width="52" height="52" viewBox="0 0 48 48" fill="none"><path d="M6 12C6 10.3 7.3 9 9 9H19L22 13H39C40.7 13 42 14.3 42 16V36C42 37.7 40.7 39 39 39H9C7.3 39 6 37.7 6 36Z" fill="#ff6b9d" opacity=".4"/></svg>
+      <span>${msgs[fid]||'Empty folder'}</span>
+      <span style="font-size:11px;opacity:.5">You can also drag & drop files here</span>
+    </div>`;
+  }
+  return files.map(f=>{
+    const ri=all.indexOf(f);
+    if(f.type==='image') return `<div class="fc" id="fc-${fid}-${f.id}" onclick="toggleSel(event,'${fid}','${f.id}')" ondblclick="openViewer('${fid}',${ri})">
+      <img src="${f.data}" alt="${f.name}" loading="lazy"/>
+      <div class="fc-name">${f.name}</div>
+      <div class="fc-chk">&#10003;</div>
+      <div class="fc-badge">IMG</div>
+    </div>`;
+    if(f.type==='video') return `<div class="fc" id="fc-${fid}-${f.id}" onclick="toggleSel(event,'${fid}','${f.id}')" ondblclick="openViewer('${fid}',${ri})">
+      <video src="${f.data}" muted preload="metadata" style="pointer-events:none"></video>
+      <div class="fc-name">${f.name}</div>
+      <div class="fc-chk">&#10003;</div>
+      <div class="fc-badge" style="background:rgba(80,80,220,.8)">VID</div>
+    </div>`;
+    return `<div class="fc" id="fc-${fid}-${f.id}" onclick="toggleSel(event,'${fid}','${f.id}')">
+      <div class="fc-doc"><div>${IC.notes}</div></div>
+      <div class="fc-name">${f.name}</div>
+      <div class="fc-chk">&#10003;</div>
+    </div>`;
+  }).join('');
+}
+
+function refreshFolderWin(fid,filter){
+  filter=filter||'all';
+  const g=document.getElementById('fg-'+fid); if(g) g.innerHTML=renderGrid(fid,filter);
+  const s=document.querySelector(`#wb-${fid} .fw-stats`);
+  if(s){
+    const f=fileDB[fid]||[],ic=f.filter(x=>x.type==='image').length,vc=f.filter(x=>x.type==='video').length;
+    s.innerHTML=fid==='memories'
+      ?`<div class="fw-stat-dot"></div>${ic} photo${ic!==1?'s':''} &nbsp;|&nbsp; ${vc} video${vc!==1?'s':''} &nbsp;|&nbsp; ${f.length} total`
+      :`<div class="fw-stat-dot"></div>${f.length} item${f.length!==1?'s':''}`;
+  }
+}
+
+function switchTab(fid,filter,el){
+  document.querySelectorAll(`#wb-${fid} .fw-tab`).forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  refreshFolderWin(fid,filter);
+}
+
+function toggleSel(e,fid,fileId){
+  e.stopPropagation();
+  const el=document.getElementById(`fc-${fid}-${fileId}`); if(!el) return;
+  el.classList.toggle('sel');
+  const any=document.querySelectorAll(`#fg-${fid} .fc.sel`).length>0;
+  const db=document.getElementById(`dsel-${fid}`); if(db) db.style.display=any?'block':'none';
+}
+
+// ══════════════════════════════════════════════
+// DRAG & DROP INTO FOLDER WINDOW
+// ══════════════════════════════════════════════
+function handleUpload(fid,e){ processFiles(fid,Array.from(e.target.files)); e.target.value=''; }
+
+function processFiles(fid,files){
+  const cfg=FOLDERS[fid];
+  const allowed=cfg.types||['image','video','doc'];
+  let done=0;
+  files.forEach(f=>{
+    const isImg=f.type.startsWith('image/'), isVid=f.type.startsWith('video/');
+    if(isImg&&!allowed.includes('image')){ showToast(`Images not allowed in ${cfg.label}`); done++; return; }
+    if(isVid&&!allowed.includes('video')){ showToast(`Videos not allowed in ${cfg.label}`); done++; return; }
+    const r=new FileReader();
+    r.onload=ev=>{
+      if(!fileDB[fid]) fileDB[fid]=[];
+      fileDB[fid].push({ id:uid(), name:f.name, type:isImg?'image':isVid?'video':'doc', data:ev.target.result, addedAt:Date.now() });
+      const ok=LS.saveFiles(fileDB);
+      done++;
+      if(done===files.length){
+        refreshFolderWin(fid);
+        showToast(ok?`${files.length} file${files.length!==1?'s':''} saved to ${cfg.label}`:`Added but storage full`);
+      }
+    };
+    r.readAsDataURL(f);
+  });
+}
+
+function attachDrop(fid,win){
+  const body=win.querySelector('.wbody');
+  const ov=()=>document.getElementById('dov-'+fid);
+  body.addEventListener('dragover',e=>{ e.preventDefault(); const o=ov(); if(o) o.classList.add('on'); });
+  body.addEventListener('dragleave',()=>{ const o=ov(); if(o) o.classList.remove('on'); });
+  body.addEventListener('drop',e=>{ e.preventDefault(); const o=ov(); if(o) o.classList.remove('on'); processFiles(fid,Array.from(e.dataTransfer.files)); });
+}
+
+// ══════════════════════════════════════════════
+// DELETE
+// ══════════════════════════════════════════════
+function deleteSelected(fid){
+  const sel=[...document.querySelectorAll(`#fg-${fid} .fc.sel`)].map(el=>el.id.replace(`fc-${fid}-`,''));
+  if(!sel.length) return;
+  showConfirm(`Delete ${sel.length} file${sel.length!==1?'s':''}?`,'This cannot be undone.',()=>{
+    fileDB[fid]=(fileDB[fid]||[]).filter(f=>!sel.includes(f.id));
+    LS.saveFiles(fileDB); refreshFolderWin(fid);
+    const db=document.getElementById(`dsel-${fid}`); if(db) db.style.display='none';
+    showToast(`${sel.length} file${sel.length!==1?'s':''} deleted`);
+  },true);
+}
+
+function clearFolder(fid){
+  const cnt=(fileDB[fid]||[]).length;
+  if(!cnt){ showToast('Folder is already empty'); return; }
+  showConfirm(`Clear all ${cnt} files from ${FOLDERS[fid].label}?`,'All files will be permanently deleted.',()=>{
+    fileDB[fid]=[]; LS.saveFiles(fileDB); refreshFolderWin(fid);
+    showToast(`${FOLDERS[fid].label} cleared`);
+  },true);
+}
+
+// ══════════════════════════════════════════════
+// MEDIA VIEWER
+// ══════════════════════════════════════════════
+function openViewer(fid,idx){ viewerCtx={folder:fid,idx}; showViewer(); }
+function showViewer(){
+  const {folder,idx}=viewerCtx, files=fileDB[folder]||[];
+  if(!files.length) return;
+  const f=files[idx], img=document.getElementById('vImg'), vid=document.getElementById('vVid');
+  document.getElementById('vName').textContent=`${f.name}  (${idx+1} / ${files.length})`;
+  vid.pause&&vid.pause();
+  if(f.type==='image'){ img.src=f.data; img.style.display='block'; vid.style.display='none'; }
+  else { vid.src=f.data; vid.style.display='block'; img.style.display='none'; }
+  document.getElementById('vprev').style.opacity=idx>0?'1':'0.3';
+  document.getElementById('vnext').style.opacity=idx<files.length-1?'1':'0.3';
+  document.getElementById('viewer').style.display='flex';
+}
+function viewNav(dir){ const files=fileDB[viewerCtx.folder]||[], ni=viewerCtx.idx+dir; if(ni>=0&&ni<files.length){ viewerCtx.idx=ni; showViewer(); } }
+function closeViewer(){ document.getElementById('vVid').pause&&document.getElementById('vVid').pause(); document.getElementById('viewer').style.display='none'; }
+document.getElementById('viewer').addEventListener('click',e=>{ if(e.target===document.getElementById('viewer')) closeViewer(); });
+document.addEventListener('keydown',e=>{ if(document.getElementById('viewer').style.display==='flex'){ if(e.key==='ArrowLeft') viewNav(-1); else if(e.key==='ArrowRight') viewNav(1); else if(e.key==='Escape') closeViewer(); } });
+
+// ══════════════════════════════════════════════
+// NOTEPAD
+// ══════════════════════════════════════════════
+function buildNotepad(){
+  return `<div class="np-menu"><div class="np-mi" onclick="saveNote()">File</div><div class="np-mi">Edit</div><div class="np-mi">Format</div></div>
+    <textarea class="np-ta" id="npText" oninput="noteChanged()">${LS.loadNotes()}</textarea>
+    <div class="np-bar"><span id="npStatus">All changes saved</span><button class="np-save" onclick="saveNote()">Save</button></div>`;
+}
+let nst=null;
+function noteChanged(){ document.getElementById('npStatus').textContent='Unsaved...'; clearTimeout(nst); nst=setTimeout(saveNote,1500); }
+function saveNote(){ const t=document.getElementById('npText'); if(!t) return; LS.saveNotes(t.value); document.getElementById('npStatus').textContent='Saved  '+new Date().toLocaleTimeString(); }
+
+// ══════════════════════════════════════════════
+// EXPLORER / THIS PC / RECYCLE / OFFICE
+// ══════════════════════════════════════════════
+function buildExplorer(){
+  const items=[{id:'pictures',ic:IC.pictures,n:'Pictures'},{id:'videos',ic:IC.videos,n:'Videos'},{id:'memories',ic:IC.memories,n:'Memories'},{id:'notes',ic:IC.notes,n:'Notes'},{id:'fights',ic:IC.fights,n:'Fights'},{id:'word',ic:IC.word,n:'Word'},{id:'excel',ic:IC.excel,n:'Excel'},{id:'ppt',ic:IC.ppt,n:'PowerPoint'},{id:'outlook',ic:IC.outlook,n:'Outlook'},{id:'teams',ic:IC.teams,n:'Teams'},{id:'thispc',ic:IC.thispc,n:'This PC'},{id:'recycle',ic:IC.recycle,n:'Recycle Bin'}];
+  return `<div class="ex-bar"><div class="ex-nb">&#8592;</div><div class="ex-nb">&#8594;</div><div class="ex-nb">&#8593;</div><input class="ex-path" value="This PC" readonly/></div>
+    <div class="ex-grid">${items.map(it=>`<div class="ex-it" ondblclick="openWin('${it.id}')"><div style="width:40px;height:40px">${it.ic}</div><div class="ex-it-n">${it.n}</div></div>`).join('')}</div>`;
+}
+
+function buildThisPC(){
+  const drives=[{n:'OS (C:)',l:'Local Disk',u:65,t:'237 GB'},{n:'Data (D:)',l:'Local Disk',u:42,t:'465 GB'},{n:'Backup (E:)',l:'Local Disk',u:20,t:'931 GB'}];
+  const folds=[{id:'pictures',n:'Pictures',ic:IC.pictures},{id:'videos',n:'Videos',ic:IC.videos},{id:'memories',n:'Memories',ic:IC.memories},{id:'notes',n:'Notes',ic:IC.notes},{id:'fights',n:'Fights',ic:IC.fights}];
+  return `<div class="pc-wrap">
+    <div class="sec-h">Devices and drives</div>
+    <div class="drv-grid">${drives.map(d=>`<div class="drv-card"><div class="drv-top"><div>${IC.drive}</div><div><div class="drv-n">${d.n}</div><div class="drv-l">${d.l}</div></div></div><div class="drv-bg"><div class="drv-fill" style="width:${d.u}%"></div></div><div class="drv-sz">${Math.round(d.u*parseFloat(d.t)/100)} GB used of ${d.t}</div></div>`).join('')}</div>
+    <div class="sec-h">Folders</div>
+    <div class="fold-row">${folds.map(f=>`<div class="fold-c" ondblclick="openWin('${f.id}')"><div>${f.ic}</div><span>${f.n}</span></div>`).join('')}</div>
+  </div>`;
+}
+
+function buildRecycle(){ return `<div class="rc-wrap"><div>${IC.recycle}</div><div style="font-size:15px">Recycle Bin is empty</div><div style="font-size:12px;margin-top:4px">No bad memories here</div></div>`; }
+function buildOffice(name,color,svg){ return `<div style="display:flex;flex-direction:column;height:100%"><div class="of-hdr" style="background:${color}"><div>${svg}</div><span>Microsoft ${name}</span></div><div class="of-body"><div>${svg}</div><div style="font-size:14px;color:rgba(255,200,215,.25)">Microsoft ${name}</div><button class="of-new" style="background:${color}">+ New Document</button></div></div>`; }
+
+// ══════════════════════════════════════════════
+// CONTEXT MENU
+// ══════════════════════════════════════════════
+document.addEventListener('contextmenu',e=>{
+  e.preventDefault();
+  if(e.target.closest('.win')||e.target.closest('#bar')||e.target.closest('#smenu')||e.target.closest('#adder')) return;
+  const m=document.getElementById('ctx');
+  m.style.display='block';
+  let x=e.clientX,y=e.clientY;
+  if(x+220>window.innerWidth) x=window.innerWidth-225;
+  if(y+160>window.innerHeight-44) y=e.clientY-170;
+  m.style.left=x+'px'; m.style.top=y+'px';
+});
+document.addEventListener('click',closeCtxMenu);
+function closeCtxMenu(){ document.getElementById('ctx').style.display='none'; }
+function ctxAct(a){
+  closeCtxMenu();
+  if(a==='refresh'){ const d=document.getElementById('desktop'); d.style.opacity='.7'; setTimeout(()=>d.style.opacity='1',180); }
+  if(a==='new-folder') showNewFolderDlg();
+}
+
+// ══════════════════════════════════════════════
+// START MENU
+// ══════════════════════════════════════════════
+function toggleSM(){ const s=document.getElementById('smenu'); s.style.display=s.style.display==='block'?'none':'block'; }
+function closeSM(){ document.getElementById('smenu').style.display='none'; }
+document.addEventListener('click',e=>{ if(!e.target.closest('#smenu')&&!e.target.closest('.bar-start')) closeSM(); });
+
+// ══════════════════════════════════════════════
+// TOAST
+// ══════════════════════════════════════════════
+function showToast(msg){
+  const c=document.getElementById('toast');
+  const el=document.createElement('div'); el.className='toast-item'; el.textContent=msg;
+  c.appendChild(el);
+  setTimeout(()=>el.remove(),3000);
+}
+
+// ══════════════════════════════════════════════
+// CONFIRM DIALOG
+// ══════════════════════════════════════════════
+function showConfirm(title,msg,onOk,danger=false){
+  const ov=document.createElement('div'); ov.className='overlay';
+  ov.innerHTML=`<div class="dlg"><div class="dlg-t">${title}</div><div class="dlg-m">${msg}</div><div class="dlg-btns"><button class="dlg-btn dlg-cancel" id="dCnl">Cancel</button><button class="dlg-btn dlg-ok${danger?' red':''}" id="dOk">Confirm</button></div></div>`;
+  document.body.appendChild(ov);
+  ov.querySelector('#dCnl').onclick=()=>ov.remove();
+  ov.querySelector('#dOk').onclick=()=>{ ov.remove(); onOk(); };
+}
+
+function showNewFolderDlg(){
+  const ov=document.createElement('div'); ov.className='overlay';
+  ov.innerHTML=`<div class="dlg"><div class="dlg-t">New Folder</div><input class="dlg-inp" id="nfN" placeholder="Folder name" maxlength="30"/><div class="dlg-btns"><button class="dlg-btn dlg-cancel" id="nfC">Cancel</button><button class="dlg-btn dlg-ok" id="nfO">Create</button></div></div>`;
+  document.body.appendChild(ov);
+  const inp=ov.querySelector('#nfN'); inp.focus();
+  ov.querySelector('#nfC').onclick=()=>ov.remove();
+  ov.querySelector('#nfO').onclick=()=>{
+    const name=inp.value.trim(); if(!name) return;
+    ov.remove();
+    const el=document.createElement('div'); el.className='icon';
+    el.innerHTML=`<div class="icon-svg">${IC.folder}</div><div class="icon-lbl">${name}</div>`;
+    el.addEventListener('click',e=>{ e.stopPropagation(); selIcon(el); });
+    document.getElementById('darea').appendChild(el);
+    showToast(`Folder "${name}" created`);
+  };
+  inp.addEventListener('keydown',e=>{ if(e.key==='Enter') ov.querySelector('#nfO').click(); });
+}
+
+// ══════════════════════════════════════════════
+// CURSOR
+// ══════════════════════════════════════════════
+document.addEventListener('mousemove',e=>{ const c=document.getElementById('cur'); c.style.left=e.clientX+'px'; c.style.top=e.clientY+'px'; });
+document.addEventListener('mousedown',()=>document.getElementById('cur').classList.add('cl'));
+document.addEventListener('mouseup',()=>document.getElementById('cur').classList.remove('cl'));
+</script>
+</body>
+</html>
